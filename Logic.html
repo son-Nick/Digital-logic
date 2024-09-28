@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Digital Logic</title>
+    <style>
+      * {
+        background-color: #333;
+        color: white;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 90vh;
+        margin: 4px;
+      }
+      .container h1 {
+        margin-bottom: 2px;
+      }
+      .container input {
+        margin-bottom: 8px;
+        padding: 5px;
+        border-radius: 15px;
+        outline: none;
+      }
+      #id {
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1 id="output"></h1>
+      <h1>Decimal To Hexadecimal</h1>
+      <input
+        id="inputValue"
+        type="text"
+        placeholder="insert a decimal number"
+      />
+      <button onclick="base10ToB16()">Convert</button>
+    </div>
+  </body>
+  <script>
+    const inputValue = document.getElementById("inputValue").value;
+    const outputData = document.getElementById("output");
+    function base10ToB16() {
+      let result = parseInt(inputValue).toString(16);
+      outputData.innerText = result;
+    }
+  </script>
+</html>
