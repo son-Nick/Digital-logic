@@ -42,15 +42,42 @@
         type="text"
         placeholder="insert a decimal number"
       />
-      <button onclick="base10ToB16()">Convert</button>
+      <button id="convertButton">Convert</button>
     </div>
   </body>
   <script>
-    const inputValue = document.getElementById("inputValue").value;
-    const outputData = document.getElementById("output");
-    function base10ToB16() {
-      let result = parseInt(inputValue).toString(16);
-      outputData.innerText = result;
+    const inputState = {
+      inputValue: "",
+    };
+    const inputField = document.getElementById("inputValue");
+    const outputDisplay = document.getElementById("output");
+    const convertButton = document.getElementById("convertButton");
+
+    function setInputState(value) {
+      inputState.inputValue = value;
     }
+
+    function convertToHexadecimal() {
+      const decimalValue = parseInt(inputState.inputValue, 10);
+
+      if (!isNaN(decimalValue)) {
+        const hexValue = decimalValue.toString(16).toLocaleUpperCase();
+        outputDisplay.textContent = hexValue;
+      } else {
+        outputDisplay.textContent = "Invalid Number";
+      }
+    }
+
+    convertButton.addEventListener("click", () => {
+      convertToHexadecimal();
+    });
+
+    inputField.addEventListener("input", (event) => {
+      setInputState(event.target.value);
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      inputField.value = "";
+    });
   </script>
 </html>
