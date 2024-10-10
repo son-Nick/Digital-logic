@@ -6,18 +6,87 @@
     <title>Digital Logic</title>
     <style>
       * {
-        background-color: #333;
-        color: white;
-        margin: 0;
-        padding: 0;
+        margin: 0%;
+        padding: 0%;
+        overflow: hidden;
+        color: rgb(40, 182, 4);
       }
+      body {
+        background-color: rgba(0, 0, 0, 0.999);
+      }
+      .navbar {
+        background-color: #000000;
+        font-size: 26px;
+        width: 100%;
+        /* height: 20px; */
+        box-sizing: border-box;
+      }
+      .navbar ul {
+        display: grid;
+        grid-template-columns: auto 0.6fr auto;
+      }
+      .navbar ul .navList {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .navbar ul .searchbar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .navbar ul .searchbar .searchInput {
+        outline: none;
+        font-size: 14px;
+        padding: 4px;
+        box-sizing: border-box;
+        border-radius: 10px;
+        width: 60%;
+        text-align: center;
+        opacity: 0.5;
+      }
+      .navbar ul li a:hover {
+        background-color: rgb(19, 58, 4);
+        color: #fff;
+        border-radius: 15px;
+        padding: 5px;
+        text-decoration: none;
+      }
+      .navbar ul #tabLink1:visited {
+        background-color: rgb(58, 15, 4);
+        color: #fff;
+        border-radius: 15px;
+        padding: 5px;
+        text-decoration: none;
+      }
+      .dropdown-content {
+        background-color: #f9f9f9;
+        position: absolute;
+        display: none;
+        min-width: 160px;
+        opacity: 0.5;
+        z-index: 1;
+      }
+      .dropdown-content li a {
+        color: black;
+        display: block;
+        padding: 12px 16px;
+        text-decoration: none;
+      }
+      .show {
+        display: block;
+      }
+      /* -------------------------------------------form ------------------------*/
       .container {
+        margin: 0%;
+        padding: 0;
+        width: 100%;
+        border: none;
+        color: rgba(253, 252, 252, 0.952);
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        height: 90vh;
-        margin: 4px;
       }
       .container h1 {
         margin-bottom: 2px;
@@ -34,9 +103,11 @@
     </style>
   </head>
   <body>
+    <div class="navbar"></div>
+    <canvas id="canvas" style="background: rgba(0, 0, 0, 0.999)"></canvas>
     <div class="container">
-      <h1 id="output"></h1>
-      <h1>Decimal To Hexadecimal</h1>
+      <p id="output"></p>
+      <h1><span id="header"></span> to <span id="sub-header"></span></h1>
       <input
         id="inputValue"
         type="text"
@@ -46,6 +117,143 @@
     </div>
   </body>
   <script>
+    // ---------------------------------navbar-----------------------------------------
+    let heading = document.getElementById("header");
+    let subHeading = document.getElementById("sub-header");
+    function createNavbar() {
+      const navigation = [
+        {
+          tab: "Binary",
+          link: "#",
+          id: "tabLink1",
+          dropdown: [
+            { text: "Decimal", link: "#" },
+            { text: "Octal", link: "#" },
+            { text: "Hexadecimal", link: "#" },
+          ],
+        },
+        {
+          tab: "Decimal",
+          link: "#",
+          id: "tabLink",
+          dropdown: [
+            { text: "Binary", link: "#" },
+            { text: "Octal", link: "#" },
+            { text: "Hexadecimal", link: "#" },
+          ],
+        },
+        {
+          tab: "Octal",
+          link: "#",
+          id: "tabLink",
+          dropdown: [
+            { text: "Binary", link: "#" },
+            { text: "Decimal", link: "#" },
+            { text: "Hexadecimal", link: "#" },
+          ],
+        },
+        {
+          tab: "Hexadecimal",
+          link: "#",
+          id: "tabLink",
+          dropdown: [
+            { text: "Binary", link: "#" },
+            { text: "Decimal", link: "#" },
+            { text: "Octal", link: "#" },
+          ],
+        },
+      ];
+
+      let navbar = document.querySelector(".navbar");
+      let ul = document.createElement("ul");
+      let leftDiv = document.createElement("div");
+      leftDiv.classList.add("navList");
+      let rightDiv = document.createElement("div");
+      rightDiv.classList.add("navList");
+      let centerDiv = document.createElement("div");
+      centerDiv.classList.add("searchbar");
+      let input = document.createElement("input");
+      input.type = "text";
+      input.id = "searchInput";
+      input.placeholder = "Enter a keyword";
+      input.classList.add("searchInput");
+      centerDiv.appendChild(input);
+      ul.appendChild(leftDiv);
+      ul.appendChild(centerDiv);
+
+      ul.appendChild(rightDiv);
+
+      navigation.forEach((nav, index) => {
+        let li = document.createElement("li");
+        let a = document.createElement("a");
+        li.id = nav.id;
+        a.href = nav.link;
+
+        li.appendChild(a);
+
+        if (index < 2) {
+          let arr = [];
+          arr.push(nav.tab);
+          arr.map((value) => {
+            a.textContent = value;
+            leftDiv.appendChild(li);
+          });
+        } else {
+          let arr = [];
+          arr.push(nav.tab);
+          arr.map((value) => {
+            a.textContent = value;
+            rightDiv.appendChild(li);
+          });
+        }
+        if (nav.dropdown) {
+          let dropdownDiv = document.createElement("div");
+          dropdownDiv.classList.add("dropdown-content");
+
+          nav.dropdown.forEach((item) => {
+            let dropdownList = document.createElement("li");
+            let dropdownLink = document.createElement("a");
+            dropdownLink.href = item.link;
+            dropdownLink.textContent = item.text;
+            dropdownList.appendChild(dropdownLink);
+            dropdownDiv.appendChild(dropdownList);
+            dropdownList.addEventListener("click", (event) => {
+              setHeading(event.target.textContent);
+            });
+          });
+
+          li.appendChild(dropdownDiv);
+
+          li.addEventListener("mouseover", () => {
+            dropdownDiv.classList.add("show");
+          });
+          li.addEventListener("mouseout", () => {
+            dropdownDiv.classList.remove("show");
+          });
+        }
+        // let tabLink = document.getElementById("tabLink");
+        li.addEventListener("click", (event) => {
+          let h1 = event.target.textContent;
+          heading.textContent = h1;
+        });
+      });
+
+      navbar.appendChild(ul);
+    }
+    createNavbar();
+    function setHeading(value) {
+      headingValues.subHeading = value;
+      subHeading.textContent = headingValues.subHeading;
+      console.log(value);
+      console.log(headingValues);
+    }
+    const headingValues = {
+      heading: "",
+      subHeading: "",
+    };
+
+    // ---------------------------------form--------------------------------------------
+
     const inputState = {
       inputValue: "",
     };
@@ -79,5 +287,52 @@
     document.addEventListener("DOMContentLoaded", () => {
       inputField.value = "";
     });
+  </script>
+
+  <!-------------------------------------canvas--------------------------------------------------------- -->
+
+  <script>
+    var canvas = document.getElementById("canvas");
+    var context = canvas.getContext("2d");
+    var W = window.innerWidth;
+    var H = 200;
+
+    canvas.width = W;
+    canvas.height = H;
+
+    var fontSize = 16;
+    var columns = Math.floor(W / fontSize);
+    // console.log(`columns:${columns}`);
+
+    var drops = [];
+    for (var i = 0; i < columns; i++) {
+      drops.push(0);
+    }
+    // console.log(drops);
+    var str = "1011000111001101010101010101010101010";
+
+    function draw() {
+      context.fillStyle = "rgba(0,0,0,0.05)";
+      context.fillRect(0, 0, W, H);
+      context.fontSize = "700 " + fontSize + "px";
+      context.fillStyle = "#00cc33";
+      context.textAlign = "center";
+
+      // context.fillText(str, W / 2, H / 2);
+      for (var i = 0; i < columns; i++) {
+        var index = Math.floor(Math.random() * str.length);
+        // console.log(index);
+        var x = i * fontSize;
+        var y = drops[i] * fontSize;
+        context.fillText(str[index], x, y);
+        // console.log(str[index]);
+        if (y >= canvas.height && Math.random() > 0.99) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+    }
+    draw();
+    setInterval(draw, 180);
   </script>
 </html>
