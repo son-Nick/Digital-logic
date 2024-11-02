@@ -100,6 +100,28 @@
       #id {
         color: red;
       }
+      .box-container {
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        margin: 10px;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+      }
+      .box {
+        width: 180px;
+        height: 180px;
+        background-color: rgb(40, 182, 4);
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        margin: 10px;
+        transition: transform 0.3s ease;
+      }
+      .box:hover {
+        transform: translateY(-15px);
+      }
     </style>
   </head>
   <body>
@@ -114,6 +136,11 @@
         placeholder="insert a decimal number"
       />
       <button id="convertButton">Convert</button>
+    </div>
+    <div class="box-container">
+      <div class="box"></div>
+      <div class="box"></div>
+      <div class="box"></div>
     </div>
   </body>
   <script>
